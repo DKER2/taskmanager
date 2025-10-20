@@ -1,5 +1,7 @@
 package com.theawesomeengineer.taskmanager.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
@@ -19,5 +21,9 @@ public class TaskService {
             .completed(completed)
             .build();
         taskRepository.save(newTask);
+    }
+
+    public List<TaskEntity> getTasks() {
+        return taskRepository.findAll();
     }
 }
