@@ -3,11 +3,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-package com.theawesomeengineer.taskmanager.api;
+package com.theawesomeengineer.taskmanager.payload.api;
 
-import com.theawesomeengineer.taskmanager.model.Error;
-import com.theawesomeengineer.taskmanager.model.Task;
-import com.theawesomeengineer.taskmanager.model.TaskRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -22,6 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import com.theawesomeengineer.taskmanager.payload.model.Error;
+import com.theawesomeengineer.taskmanager.payload.model.Task;
+import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 
 import jakarta.validation.Valid;
 import java.util.List;

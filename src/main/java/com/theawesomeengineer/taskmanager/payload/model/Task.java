@@ -1,4 +1,4 @@
-package com.theawesomeengineer.taskmanager.model;
+package com.theawesomeengineer.taskmanager.payload.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;

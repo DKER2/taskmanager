@@ -2,6 +2,7 @@ package com.theawesomeengineer.taskmanager.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.theawesomeengineer.taskmanager.api.TasksApi;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
-import com.theawesomeengineer.taskmanager.payload.requests.CreateTaskRequest;
-import com.theawesomeengineer.taskmanager.payload.requests.UpdateTaskRequest;
+import com.theawesomeengineer.taskmanager.payload.api.TasksApi;
+import com.theawesomeengineer.taskmanager.payload.model.Task;
+import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
 
 import jakarta.validation.Valid;
@@ -31,8 +32,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class TaskController implements TasksApi {
     private final TaskService taskService;
 
+    @Override
     @PostMapping("")
-    public ResponseEntity<TaskEntity> createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
+    public ResponseEntity<Task> createTask(@Valid @RequestBody TaskRequest createTaskRequest) {
         TaskEntity createdTask = taskService.createTask(createTaskRequest.getTitle(), createTaskRequest.getDescription(), createTaskRequest.getCompleted());
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequestUri()
@@ -42,9 +44,16 @@ public class TaskController implements TasksApi {
         return ResponseEntity.created(location).body(createdTask);
     }
 
+    @Override
     @GetMapping("")
-    public List<TaskEntity> getTasks() {
-        return taskService.getTasks();
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<TaskEntity> taskEntityList = taskService.getTasks();
+
+        List<Task> taskList = taskEntityList.stream()
+            .map(taskEntity -> (Task) taskEntity) 
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(taskList);
     }
 
     @GetMapping("/{id}")
@@ -52,9 +61,11 @@ public class TaskController implements TasksApi {
         return taskService.getTask(id);
     }
 
+    @Override
     @PutMapping("/{id}")
-    public TaskEntity updateTask(@PathVariable Long id, @Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
-        return taskService.updateTask(id, updateTaskRequest.getTitle(), updateTaskRequest.getDescription(), updateTaskRequest.getCompleted());
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest updateTaskRequest) {
+        TaskEntity updatedTask = taskService.updateTask(id, updateTaskRequest.getTitle(), updateTaskRequest.getDescription(), updateTaskRequest.getCompleted());
+        return ResponseEntity.ok().body(updatedTask);
     }
 
     @DeleteMapping("/{id}")

@@ -2,7 +2,7 @@ package com.theawesomeengineer.taskmanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
-import com.theawesomeengineer.taskmanager.payload.requests.CreateTaskRequest;
+import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
 
 
@@ -82,7 +82,7 @@ class TaskControllerTest {
 
     @Test
     void createTask_shouldCallServiceAndReturnOk() throws Exception {
-        CreateTaskRequest request = new CreateTaskRequest();
+        TaskRequest request = new TaskRequest();
         request.setTitle("New Task");
         request.setDescription("New Desc");
         request.setCompleted(false);
