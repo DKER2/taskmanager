@@ -15,13 +15,14 @@ import lombok.AllArgsConstructor;
 public class TaskService {
     private final TaskRepository taskRepository;
 
-    public void createTask(String title, String description, boolean completed) {
+    public TaskEntity createTask(String title, String description, boolean completed) {
         TaskEntity newTask = TaskEntity.builder()
             .title(title)
             .description(description)
             .completed(completed)
             .build();
         taskRepository.save(newTask);
+        return newTask;
     }
 
     public TaskEntity getTask(Long id) {
@@ -33,6 +34,17 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        taskRepository.deleteById(id);;
+        taskRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Task with ID %d not found", id)));
+        taskRepository.deleteById(id);
+    }
+
+    public TaskEntity updateTask(Long id, String title, String description, Boolean completed) {
+        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Task with ID %d not found", id)));
+
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setCompleted(completed);
+
+        return task;
     }
 }
