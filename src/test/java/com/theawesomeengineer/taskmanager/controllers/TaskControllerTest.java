@@ -90,7 +90,7 @@ class TaskControllerTest {
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk()); 
+                .andExpect(status().isCreated()); 
 
         verify(taskService).createTask("New Task", "New Desc", false);
     }

@@ -10,5 +10,5 @@ public class UpdateTaskRequest {
     private String title;
     @NotBlank(message = "Description is required.")
     private String description;
-    private Boolean completed = false;
+    private Boolean completed;
 }

@@ -1,5 +1,6 @@
 package com.theawesomeengineer.taskmanager.controllers;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.theawesomeengineer.taskmanager.api.TasksApi;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
@@ -30,8 +32,14 @@ public class TaskController implements TasksApi {
     private final TaskService taskService;
 
     @PostMapping("")
-    public TaskEntity createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
-        return taskService.createTask(createTaskRequest.getTitle(), createTaskRequest.getDescription(), createTaskRequest.getCompleted());
+    public ResponseEntity<TaskEntity> createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
+        TaskEntity createdTask = taskService.createTask(createTaskRequest.getTitle(), createTaskRequest.getDescription(), createTaskRequest.getCompleted());
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequestUri()
+            .path("/{id}")
+            .buildAndExpand(createdTask.getId())
+            .toUri();
+        return ResponseEntity.created(location).body(createdTask);
     }
 
     @GetMapping("")

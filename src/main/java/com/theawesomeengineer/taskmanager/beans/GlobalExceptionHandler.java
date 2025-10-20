@@ -18,14 +18,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Object> handleDuplicateException(BaseException ex) {
-        String[] stackTrace = Arrays.stream(ex.getStackTrace())
-            .map(StackTraceElement::toString)
-            .toArray(String[]::new);
 
         Map<String, Object> errorBody = Map.of(
             "message", ex.getMessage(),
             "timestamp", Instant.now(),
-            "details", stackTrace 
+            "details", "" 
         );
         return ResponseEntity
             .status(ex.getCode())

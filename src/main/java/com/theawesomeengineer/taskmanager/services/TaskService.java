@@ -45,6 +45,6 @@ public class TaskService {
         task.setDescription(description);
         task.setCompleted(completed);
 
-        return task;
+        return taskRepository.save(task);
     }
 }
