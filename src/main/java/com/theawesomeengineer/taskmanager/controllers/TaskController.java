@@ -2,6 +2,7 @@ package com.theawesomeengineer.taskmanager.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.theawesomeengineer.taskmanager.api.TasksApi;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
 import com.theawesomeengineer.taskmanager.payload.requests.CreateTaskRequest;
 import com.theawesomeengineer.taskmanager.payload.requests.UpdateTaskRequest;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/tasks")
 @AllArgsConstructor
-public class TaskController {
+public class TaskController implements TasksApi {
     private final TaskService taskService;
 
     @PostMapping("")
@@ -48,7 +50,8 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
