@@ -57,7 +57,7 @@ class TaskControllerTest {
 
         given(taskService.getTasks()).willReturn(taskList);
 
-        mockMvc.perform(get("/api/tasks/"))
+        mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
@@ -74,7 +74,7 @@ class TaskControllerTest {
                 .build();
         given(taskService.getTask(1L)).willReturn(task);
 
-        mockMvc.perform(get("/api/tasks/1"))
+        mockMvc.perform(get("/tasks/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("Test Task 1"));
@@ -87,7 +87,7 @@ class TaskControllerTest {
         request.setDescription("New Desc");
         request.setCompleted(false);
 
-        mockMvc.perform(post("/api/tasks/")
+        mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk()); 
@@ -97,7 +97,7 @@ class TaskControllerTest {
 
     @Test
     void deleteTask_shouldCallServiceAndReturnOk() throws Exception {
-        mockMvc.perform(delete("/api/tasks/1"))
+        mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isOk());
 
         verify(taskService).deleteTask(1L);

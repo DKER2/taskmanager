@@ -15,23 +15,24 @@ import com.theawesomeengineer.taskmanager.payload.requests.CreateTaskRequest;
 import com.theawesomeengineer.taskmanager.payload.requests.UpdateTaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 @AllArgsConstructor
 public class TaskController {
     private final TaskService taskService;
 
-    @PostMapping("/")
-    public void createTask(@RequestBody CreateTaskRequest createTaskRequest) {
-        taskService.createTask(createTaskRequest.getTitle(), createTaskRequest.getDescription(), createTaskRequest.getCompleted());
+    @PostMapping("")
+    public TaskEntity createTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
+        return taskService.createTask(createTaskRequest.getTitle(), createTaskRequest.getDescription(), createTaskRequest.getCompleted());
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<TaskEntity> getTasks() {
         return taskService.getTasks();
     }
@@ -42,7 +43,8 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public void updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest updateTaskRequest) {
+    public TaskEntity updateTask(@PathVariable Long id, @Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
+        return taskService.updateTask(id, updateTaskRequest.getTitle(), updateTaskRequest.getDescription(), updateTaskRequest.getCompleted());
     }
 
     @DeleteMapping("/{id}")
