@@ -22,6 +22,7 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j:9.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.6'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
 
 	compileOnly 'org.projectlombok:lombok:1.18.42'
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
