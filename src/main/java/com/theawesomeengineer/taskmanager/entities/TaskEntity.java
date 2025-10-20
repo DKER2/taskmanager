@@ -1,26 +1,27 @@
 package com.theawesomeengineer.taskmanager.entities;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.theawesomeengineer.taskmanager.payload.model.Task;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Builder
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class TaskEntity extends Task {
+public class TaskEntity {
     @Id
     @GeneratedValue
     Long id;
@@ -35,8 +36,10 @@ public class TaskEntity extends Task {
     Boolean completed;
 
     @CreatedDate
-    protected Instant createdAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    protected OffsetDateTime createdAt;
 
     @LastModifiedDate
-    protected Instant updatedAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    protected OffsetDateTime updatedAt;
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
+import com.theawesomeengineer.taskmanager.mappers.TaskMapper;
 import com.theawesomeengineer.taskmanager.payload.api.TasksApi;
 import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @AllArgsConstructor
 public class TaskController implements TasksApi {
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
 
     @Override
     @PostMapping("")
@@ -41,7 +43,7 @@ public class TaskController implements TasksApi {
             .path("/{id}")
             .buildAndExpand(createdTask.getId())
             .toUri();
-        return ResponseEntity.created(location).body(createdTask);
+        return ResponseEntity.created(location).body(taskMapper.toResponseModel(createdTask));
     }
 
     @Override
@@ -50,22 +52,24 @@ public class TaskController implements TasksApi {
         List<TaskEntity> taskEntityList = taskService.getTasks();
 
         List<Task> taskList = taskEntityList.stream()
-            .map(taskEntity -> (Task) taskEntity) 
+            .map((taskEntity) -> taskMapper.toResponseModel(taskEntity)) 
             .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(taskList);
     }
 
+    @Override
     @GetMapping("/{id}")
-    public TaskEntity getMethodName(@PathVariable Long id) {
-        return taskService.getTask(id);
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        TaskEntity task = taskService.getTask(id);
+        return ResponseEntity.ok().body(taskMapper.toResponseModel(task));
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequest updateTaskRequest) {
         TaskEntity updatedTask = taskService.updateTask(id, updateTaskRequest.getTitle(), updateTaskRequest.getDescription(), updateTaskRequest.getCompleted());
-        return ResponseEntity.ok().body(updatedTask);
+        return ResponseEntity.ok().body(taskMapper.toResponseModel(updatedTask));
     }
 
     @DeleteMapping("/{id}")
