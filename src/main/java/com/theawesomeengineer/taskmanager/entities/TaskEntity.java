@@ -7,10 +7,14 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Builder
+@Getter
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class TaskEntity {
     @Id
