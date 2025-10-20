@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Gradle
 
 on:
   push:
@@ -8,18 +8,22 @@ on:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest # The type of runner to use (e.g., a fresh virtual machine)
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # Action to check out your repository code
+        uses: actions/checkout@v4 # 1. Clones your repo code
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17' # Specify the Java version your project uses
+          java-version: '21' # Set the desired Java version
           distribution: 'temurin'
-          cache: 'maven' # Use Maven caching for faster builds
+          cache: 'gradle' # 2. Use Gradle caching for faster builds
+
+      - name: Grant execution permission for gradlew
+        run: chmod +x gradlew # 3. Ensure the wrapper script is executable
 
       - name: Run Spring Boot Tests
-        run: mvn --batch-mode clean test # Execute the Maven clean and test goals
+        # 'test' is the standard Gradle task to compile and run unit/integration tests
+        run: ./gradlew clean test
