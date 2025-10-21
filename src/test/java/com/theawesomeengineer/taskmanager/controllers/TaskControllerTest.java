@@ -2,6 +2,7 @@ package com.theawesomeengineer.taskmanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
+import com.theawesomeengineer.taskmanager.mappers.TaskMapperImpl;
 import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfig
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,14 +28,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(
-    controllers = TaskController.class,
-    excludeAutoConfiguration = { 
-        HibernateJpaAutoConfiguration.class,
-        JpaRepositoriesAutoConfiguration.class
-    }
-)
+@WebMvcTest(TaskController.class)
 @AutoConfigureMockMvc
+@Import(TaskMapperImpl.class)
 class TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
