@@ -15,19 +15,4 @@ public interface TaskMapper {
 
     TaskEntity toEntity(Task task);
 
-    default LocalDateTime map(OffsetDateTime value) {
-        if (value == null) {
-            return null;
-        }
-
-        return value.toInstant().atZone(java.time.ZoneId.of("UTC")).toLocalDateTime();
-    }
-
-    default OffsetDateTime map(LocalDateTime value) {
-        if (value == null) {
-            return null;
-        }
-        
-        return value.atOffset(ZoneOffset.UTC); 
-    }
 }
