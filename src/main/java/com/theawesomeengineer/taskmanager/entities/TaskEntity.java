@@ -15,8 +15,8 @@ import lombok.Setter;
 
 @Entity
 @Builder
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)

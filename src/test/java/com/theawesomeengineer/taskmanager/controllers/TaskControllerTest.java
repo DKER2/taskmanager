@@ -1,35 +1,31 @@
 package com.theawesomeengineer.taskmanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.theawesomeengineer.taskmanager.entities.TaskEntity;
-import com.theawesomeengineer.taskmanager.payload.requests.CreateTaskRequest;
+import com.theawesomeengineer.taskmanager.payload.model.Task;
+import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
 
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(
-    controllers = TaskController.class,
-    excludeAutoConfiguration = { 
-        HibernateJpaAutoConfiguration.class,
-        JpaRepositoriesAutoConfiguration.class
-    }
-)
+@WebMvcTest(TaskController.class)
 @AutoConfigureMockMvc
 class TaskControllerTest {
     @Autowired
@@ -43,17 +39,9 @@ class TaskControllerTest {
 
     @Test
     void getTasks_shouldReturnListOfTasks() throws Exception {
-        TaskEntity task1 = TaskEntity.builder()
-                .id(1L)
-                .title("Test Task 1")
-                .description("Desc 1")
-                .build();
-        TaskEntity task2 = TaskEntity.builder()
-                .id(2L) 
-                .title("Test Task 2")
-                .description("Desc 2")
-                .build();
-        List<TaskEntity> taskList = List.of(task1, task2);
+        Task task1 = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
+        Task task2 = new Task(2L, "Test Task 2", "2", false, OffsetDateTime.now(), OffsetDateTime.now());
+        List<Task> taskList = List.of(task1, task2);
 
         given(taskService.getTasks()).willReturn(taskList);
 
@@ -66,12 +54,8 @@ class TaskControllerTest {
     }
 
     @Test
-    void getMethodName_shouldReturnOneTask() throws Exception {
-        TaskEntity task = TaskEntity.builder()
-                .id(1L)
-                .title("Test Task 1")
-                .description("Desc 1")
-                .build();
+    void getTask_shouldReturnOneTask() throws Exception {
+        Task task = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
         given(taskService.getTask(1L)).willReturn(task);
 
         mockMvc.perform(get("/tasks/1"))
@@ -82,23 +66,29 @@ class TaskControllerTest {
 
     @Test
     void createTask_shouldCallServiceAndReturnOk() throws Exception {
-        CreateTaskRequest request = new CreateTaskRequest();
+        TaskRequest request = new TaskRequest();
         request.setTitle("New Task");
         request.setDescription("New Desc");
         request.setCompleted(false);
 
+        Task createdTask = new Task(100L, "New Task", "New Desc", false, OffsetDateTime.now(), OffsetDateTime.now());
+
+        given(taskService.createTask(anyString(), anyString(), anyBoolean())).willReturn(createdTask);
+
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk()); 
-
-        verify(taskService).createTask("New Task", "New Desc", false);
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(100L))
+                .andExpect(jsonPath("$.title").value("New Task"));
+        
+        verify(taskService).createTask(eq("New Task"), eq("New Desc"), eq(false));
     }
 
     @Test
     void deleteTask_shouldCallServiceAndReturnOk() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         verify(taskService).deleteTask(1L);
     }
