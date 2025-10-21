@@ -2,6 +2,8 @@ package com.theawesomeengineer.taskmanager.services;
 
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
 import com.theawesomeengineer.taskmanager.exceptions.NotFoundException;
+import com.theawesomeengineer.taskmanager.mappers.TaskMapper;
+import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.repositories.TaskRepository;
 
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
+    @Mock
+    private TaskMapper taskMapper;
+
     @Test
     void testGetTaskById_Success() {
         TaskEntity mockTask = TaskEntity.builder()
@@ -32,9 +37,12 @@ class TaskServiceTest {
             .title("Test Task")
             .build();
 
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(mockTask));
+        Task mockTaskResponse = new Task(1L, "Test Task", null, null, null, null);
 
-        TaskEntity foundTask = taskService.getTask(1L);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(mockTask));
+        when(taskMapper.toResponseModel(mockTask)).thenReturn(mockTaskResponse);
+
+        Task foundTask = taskService.getTask(1L);
 
         assertNotNull(foundTask);
         assertEquals(1L, foundTask.getId());
