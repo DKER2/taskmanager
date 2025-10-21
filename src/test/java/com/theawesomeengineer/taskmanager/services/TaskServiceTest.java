@@ -49,7 +49,7 @@ class TaskServiceTest {
             taskService.getTask(99L);
         });
 
-        assertEquals("Task with ID 99 not found", exception.getMessage());
+        assertEquals("Task with ID 99 not found", exception.getDetailMessage());
     }
 
     @Test

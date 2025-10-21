@@ -26,7 +26,7 @@ public class TaskService {
     }
 
     public TaskEntity getTask(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Task with ID %d not found", id)));
+        return taskRepository.findById(id).orElseThrow(() -> new NotFoundException("Task not found", String.format("Task with ID %d not found", id)));
     }
 
     public List<TaskEntity> getTasks() {
@@ -34,12 +34,12 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        taskRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Task with ID %d not found", id)));
+        taskRepository.findById(id).orElseThrow(() -> new NotFoundException("Task not found", String.format("Task with ID %d not found", id)));
         taskRepository.deleteById(id);
     }
 
     public TaskEntity updateTask(Long id, String title, String description, Boolean completed) {
-        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Task with ID %d not found", id)));
+        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new NotFoundException("Task not found", String.format("Task with ID %d not found", id)));
 
         task.setTitle(title);
         task.setDescription(description);

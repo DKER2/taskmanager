@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,18 +90,23 @@ class TaskControllerTest {
         request.setDescription("New Desc");
         request.setCompleted(false);
 
+        TaskEntity createdTask = TaskEntity.builder().id(100L).title("New Task").build();
+        given(taskService.createTask(anyString(), anyString(), anyBoolean())).willReturn(createdTask);
+
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated()); 
-
-        verify(taskService).createTask("New Task", "New Desc", false);
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(100L))
+                .andExpect(jsonPath("$.title").value("New Task"));
+        
+        verify(taskService).createTask(eq("New Task"), eq("New Desc"), eq(false));
     }
 
     @Test
     void deleteTask_shouldCallServiceAndReturnOk() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         verify(taskService).deleteTask(1L);
     }

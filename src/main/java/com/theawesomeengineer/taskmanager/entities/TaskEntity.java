@@ -1,11 +1,10 @@
 package com.theawesomeengineer.taskmanager.entities;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,10 +35,8 @@ public class TaskEntity {
     Boolean completed;
 
     @CreatedDate
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    protected OffsetDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @LastModifiedDate
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    protected OffsetDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 }

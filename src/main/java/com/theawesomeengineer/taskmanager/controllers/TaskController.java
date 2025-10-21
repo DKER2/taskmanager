@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
 import com.theawesomeengineer.taskmanager.mappers.TaskMapper;
+import com.theawesomeengineer.taskmanager.mappers.TaskMapperImpl;
 import com.theawesomeengineer.taskmanager.payload.api.TasksApi;
 import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/tasks")
 @AllArgsConstructor
+@Import(TaskMapperImpl.class)
 public class TaskController implements TasksApi {
     private final TaskService taskService;
     private final TaskMapper taskMapper;
