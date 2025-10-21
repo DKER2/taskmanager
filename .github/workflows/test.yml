@@ -25,4 +25,4 @@ jobs:
         run: chmod +x gradlew # 3. Ensure the wrapper script is executable
 
       - name: Run Spring Boot Tests
-        run: ./gradlew test --info --stacktrace
+        run: ./gradlew clean test --info --stacktrace
