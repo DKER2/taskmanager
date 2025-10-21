@@ -1,6 +1,6 @@
 package com.theawesomeengineer.taskmanager.entities;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -35,8 +35,8 @@ public class TaskEntity {
     Boolean completed;
 
     @CreatedDate
-    protected LocalDateTime createdAt;
+    protected Instant createdAt;
 
     @LastModifiedDate
-    protected LocalDateTime updatedAt;
+    protected Instant updatedAt;
 }
