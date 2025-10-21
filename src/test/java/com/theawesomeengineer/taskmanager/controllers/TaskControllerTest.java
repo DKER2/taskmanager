@@ -69,7 +69,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void getMethodName_shouldReturnOneTask() throws Exception {
+    void getTask_shouldReturnOneTask() throws Exception {
         TaskEntity task = TaskEntity.builder()
                 .id(1L)
                 .title("Test Task 1")
