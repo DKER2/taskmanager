@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/tasks")
 @AllArgsConstructor
-@Import(TaskMapperImpl.class)
 public class TaskController implements TasksApi {
     private final TaskService taskService;
 
