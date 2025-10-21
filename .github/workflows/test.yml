@@ -25,11 +25,4 @@ jobs:
         run: chmod +x gradlew # 3. Ensure the wrapper script is executable
 
       - name: Run Spring Boot Tests
-        run: ./gradlew clean test
-
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: taskmanager/build/reports/
+        run: ./gradlew test --info --stacktrace
