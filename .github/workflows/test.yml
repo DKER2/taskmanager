@@ -25,5 +25,11 @@ jobs:
         run: chmod +x gradlew # 3. Ensure the wrapper script is executable
 
       - name: Run Spring Boot Tests
-        # 'test' is the standard Gradle task to compile and run unit/integration tests
         run: ./gradlew clean test
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: taskmanager/build/reports/
