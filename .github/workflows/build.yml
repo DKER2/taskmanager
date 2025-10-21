@@ -44,4 +44,6 @@ jobs:
           push: true
           # We tag the image in a standard format: ghcr.io/OWNER/REPO:latest
           # This makes it easy to find and use the image.
-          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+          # Repository names for Docker images must be lowercase.
+          tags: ghcr.io/${{ toLowerCase(github.repository) }}:latest
+
