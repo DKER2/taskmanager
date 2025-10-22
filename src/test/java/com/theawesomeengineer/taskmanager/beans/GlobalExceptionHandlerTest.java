@@ -65,7 +65,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("Internal server error ", response.getBody().getMessage());
+        assertEquals("Internal server error", response.getBody().getMessage());
         assertNotNull(response.getBody().getTimestamp());
     }
 }

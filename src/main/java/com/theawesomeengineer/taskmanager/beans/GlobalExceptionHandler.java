@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Error> handleInternalServerExceptions(RuntimeException exception) {
         Error formatedError = new Error(
-            "Internal server error ",
+            "Internal server error",
             OffsetDateTime.now()
         );
         return new ResponseEntity<Error>(formatedError, HttpStatus.INTERNAL_SERVER_ERROR);

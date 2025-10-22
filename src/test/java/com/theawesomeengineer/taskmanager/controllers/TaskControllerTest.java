@@ -34,17 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TaskController.class)
 @AutoConfigureMockMvc
 class TaskControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private TaskService taskService;
+    @MockitoBean private TaskService taskService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
     @Test
-    void getTasks_shouldReturnListOfTasks() throws Exception {
+    void getTasks_returnsListOfTasks() throws Exception {
         Task task1 = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
         Task task2 = new Task(2L, "Test Task 2", "2", false, OffsetDateTime.now(), OffsetDateTime.now());
         List<Task> taskList = List.of(task1, task2);
@@ -60,7 +57,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void getTask_shouldReturnOneTask() throws Exception {
+    void getTask_returnsTask_whenIdExists() throws Exception {
         Task task = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
         given(taskService.getTask(1L)).willReturn(task);
 
@@ -71,9 +68,10 @@ class TaskControllerTest {
     }
 
     @Test 
-    void getTask_shouldReturnNotFound() throws Exception {
-        when(taskService.getTask(1L)) 
+    void getTask_returns404_whenIdNotFound() throws Exception {
+        when(taskService.getTask(1L))
             .thenThrow(new NotFoundException("Task not found", "Task with ID 1 not found"));
+
         mockMvc.perform(get("/tasks/1"))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message").value("Task not found"))
@@ -81,14 +79,13 @@ class TaskControllerTest {
     }
 
     @Test
-    void createTask_shouldCallServiceAndReturnOk() throws Exception {
+    void createTask_returns201_andBody_whenValidRequest() throws Exception {
         TaskRequest request = new TaskRequest();
         request.setTitle("New Task");
         request.setDescription("New Desc");
         request.setCompleted(false);
 
         Task createdTask = new Task(100L, "New Task", "New Desc", false, OffsetDateTime.now(), OffsetDateTime.now());
-
         given(taskService.createTask(anyString(), anyString(), anyBoolean())).willReturn(createdTask);
 
         mockMvc.perform(post("/tasks")
@@ -102,7 +99,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void deleteTask_shouldCallServiceAndReturnOk() throws Exception {
+    void deleteTask_returns204_andCallsService() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
 
@@ -110,7 +107,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void updateTask_WhenValid_ShouldReturn200AndBody() throws Exception {
+    void updateTask_returns200_andBody_whenValid() throws Exception {
         long id = 1L;
 
         Map<String, Object> payload = Map.of(
@@ -141,7 +138,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void updateTask_WhenNotFound_ShouldReturn404() throws Exception {
+    void updateTask_returns404_whenIdNotFound() throws Exception {
         long id = 999L;
 
         Map<String, Object> payload = Map.of(
@@ -165,7 +162,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void updateTask_WhenInvalidPayload_ShouldReturn400() throws Exception {
+    void updateTask_returns400_whenPayloadInvalid() throws Exception {
         long id = 1L;
 
         Map<String, Object> invalidPayload = Map.of(
