@@ -28,7 +28,15 @@ And all the dependencies for Spring Boot is already defined in gradle
 - **Postman Collection**: Import `postman_collection.json` for testing
 
 ## Testing
-Describe your testing strategy and how to run tests.
+Model Task:
+| Field    | Type |
+| -------- | ------- |
+| id  | Primary Key    |
+| title | String     |
+| description    | String    |
+| createdAt    | OffsetDateTime  |
+| updatedAt | OffsetDateTime |
+
 
 ### Unit Tests
 ```bash
