@@ -32,4 +32,5 @@ jobs:
         with:
           # This should match the path in your build.gradle
           files: ./build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml 
+          token: ${{ secrets.GITHUB_TOKEN }}
           verbose: true # Optional: for debugging
