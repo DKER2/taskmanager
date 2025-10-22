@@ -1,13 +1,21 @@
 # Task Manager API
 
 ## Overview
-Brief description of your Task Manager API implementation.
+
+A simple CRUD task Spring-Boot backend with following endpoints
+
+## API implementation.
 
 ## Architecture
-Describe your architectural decisions and design patterns used.
+I architecture application to three layer. `Controller` where the routing happen and validate the request. `Service` is where logic of application is mainly defined.
+`Mapper` as a mapping layer between Entity and Response contract.
+`Reposiory` is where an abstraction layer of database, instead of wrting SQL query from scratch, the repository will auto generate some default query
 
 ## Prerequisites
-List any prerequisites needed to run your application (Docker, Java version, etc.)
+Java 21
+Docker
+
+And all the dependencies for Spring Boot is already defined in gradle
 
 ## Quick Start
 ```bash
