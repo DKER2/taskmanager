@@ -14,8 +14,4 @@ public class BaseException extends RuntimeException {
         this.detailMessage = detailMessage;
         this.code = code;
     }
-
-    public BaseException(String message, HttpStatusCode code) {
-        this(message, "", code);
-    }
 }

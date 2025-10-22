@@ -1,6 +1,7 @@
 package com.theawesomeengineer.taskmanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theawesomeengineer.taskmanager.exceptions.NotFoundException;
 import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
@@ -16,29 +17,31 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
 @AutoConfigureMockMvc
 class TaskControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private TaskService taskService;
+    @MockitoBean private TaskService taskService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
     @Test
-    void getTasks_shouldReturnListOfTasks() throws Exception {
+    void getTasks_returnsListOfTasks() throws Exception {
         Task task1 = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
         Task task2 = new Task(2L, "Test Task 2", "2", false, OffsetDateTime.now(), OffsetDateTime.now());
         List<Task> taskList = List.of(task1, task2);
@@ -54,7 +57,7 @@ class TaskControllerTest {
     }
 
     @Test
-    void getTask_shouldReturnOneTask() throws Exception {
+    void getTask_returnsTask_whenIdExists() throws Exception {
         Task task = new Task(1L, "Test Task 1", "1", false, OffsetDateTime.now(), OffsetDateTime.now());
         given(taskService.getTask(1L)).willReturn(task);
 
@@ -64,15 +67,25 @@ class TaskControllerTest {
                 .andExpect(jsonPath("$.title").value("Test Task 1"));
     }
 
+    @Test 
+    void getTask_returns404_whenIdNotFound() throws Exception {
+        when(taskService.getTask(1L))
+            .thenThrow(new NotFoundException("Task not found", "Task with ID 1 not found"));
+
+        mockMvc.perform(get("/tasks/1"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("Task not found"))
+            .andExpect(jsonPath("$.details").value("Task with ID 1 not found"));
+    }
+
     @Test
-    void createTask_shouldCallServiceAndReturnOk() throws Exception {
+    void createTask_returns201_andBody_whenValidRequest() throws Exception {
         TaskRequest request = new TaskRequest();
         request.setTitle("New Task");
         request.setDescription("New Desc");
         request.setCompleted(false);
 
         Task createdTask = new Task(100L, "New Task", "New Desc", false, OffsetDateTime.now(), OffsetDateTime.now());
-
         given(taskService.createTask(anyString(), anyString(), anyBoolean())).willReturn(createdTask);
 
         mockMvc.perform(post("/tasks")
@@ -86,10 +99,84 @@ class TaskControllerTest {
     }
 
     @Test
-    void deleteTask_shouldCallServiceAndReturnOk() throws Exception {
+    void deleteTask_returns204_andCallsService() throws Exception {
         mockMvc.perform(delete("/tasks/1"))
                 .andExpect(status().isNoContent());
 
         verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void updateTask_returns200_andBody_whenValid() throws Exception {
+        long id = 1L;
+
+        Map<String, Object> payload = Map.of(
+                "title", "Updated title",
+                "description", "Updated desc",
+                "completed", true
+        );
+
+        Task updated = new Task(id, "Updated title", "Updated desc", true, null, null);
+
+        when(taskService.updateTask(eq(id), eq("Updated title"), eq("Updated desc"), eq(true)))
+                .thenReturn(updated);
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload))
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.title").value("Updated title"))
+        .andExpect(jsonPath("$.description").value("Updated desc"))
+        .andExpect(jsonPath("$.completed").value(true));
+
+        verify(taskService).updateTask(id, "Updated title", "Updated desc", true);
+        verifyNoMoreInteractions(taskService);
+    }
+
+    @Test
+    void updateTask_returns404_whenIdNotFound() throws Exception {
+        long id = 999L;
+
+        Map<String, Object> payload = Map.of(
+                "title", "Anything",
+                "description", "Anything",
+                "completed", false
+        );
+
+        when(taskService.updateTask(eq(id), any(), any(), any()))
+                .thenThrow(new NotFoundException("Task not found", "Task with ID 999 not found"));
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload))
+        )
+        .andExpect(status().isNotFound());
+
+        verify(taskService).updateTask(eq(id), any(), any(), any());
+        verifyNoMoreInteractions(taskService);
+    }
+
+    @Test
+    void updateTask_returns400_whenPayloadInvalid() throws Exception {
+        long id = 1L;
+
+        Map<String, Object> invalidPayload = Map.of(
+                "title", "  ",
+                "completed", true
+        );
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidPayload))
+        )
+        .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(taskService);
     }
 }
