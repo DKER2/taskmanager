@@ -36,10 +36,6 @@ jobs:
         uses: madrapps/jacoco-report@v1.7.2
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
-          coverage-groups: |
-            Controllers: com.theawesomeengineer.controllers.*
-            Services: com.theawesomeengineer.services.*
-            Models: com.theawesomeengineer.entities.*
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 60
