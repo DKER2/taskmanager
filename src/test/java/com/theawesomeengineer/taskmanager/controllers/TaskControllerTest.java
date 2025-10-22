@@ -1,6 +1,7 @@
 package com.theawesomeengineer.taskmanager.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.theawesomeengineer.taskmanager.exceptions.NotFoundException;
 import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.payload.model.TaskRequest;
 import com.theawesomeengineer.taskmanager.services.TaskService;
@@ -22,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,6 +64,16 @@ class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("Test Task 1"));
+    }
+
+    @Test 
+    void getTask_shouldReturnNotFound() throws Exception {
+        when(taskService.getTask(1L)) 
+            .thenThrow(new NotFoundException("Task not found", "Task with ID 1 not found"));
+        mockMvc.perform(get("/tasks/1"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("Task not found"))
+            .andExpect(jsonPath("$.details").value("Task with ID 1 not found"));
     }
 
     @Test
