@@ -1,6 +1,6 @@
 package com.theawesomeengineer.taskmanager.mappers;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -15,4 +15,17 @@ public interface TaskMapper {
 
     TaskEntity toEntity(Task task);
 
+    default Instant map(OffsetDateTime value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toInstant();
+    }
+
+    default OffsetDateTime map(Instant value) {
+        if (value == null) {
+            return null;
+        }
+        return value.atOffset(ZoneOffset.UTC);
+    }
 }
