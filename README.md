@@ -59,9 +59,8 @@ List any assumptions you made during development:
 
 ## Known Limitations
 List any known limitations or areas for improvement:
-- The repository now only have master branch as PROD environemnt.
-To sepearate the env we can create another develop branch specifically for testing
-- 
+- The repository now only have master branch as PROD environemnt. To sepearate the env we can create another develop branch specifically for testing
+- The app now does not support authorization. That is vulnerable for attacking, because the hacker can just do a for loop to call api, the database will be flood with dummy data
 - 
 
 ## Technology Stack
