@@ -51,4 +51,14 @@ tasks.named('jacocoTestReport') {
         xml.required = true
         html.required = true
     }
+	classDirectories.setFrom(files(classDirectories.files.collect {
+		fileTree(dir: it, exclude: [
+			'**/payload/api/TasksApi.class',
+			'**/payload/api/ApiUtil.class',
+			'**/payload/model/Error.class',
+			'**/payload/model/Task.class',
+			'**/payload/model/TaskRequest.class',
+			'**/*MapperImpl.class',
+		])
+	}))
 }

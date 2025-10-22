@@ -168,7 +168,6 @@ class TaskControllerTest {
     void updateTask_WhenInvalidPayload_ShouldReturn400() throws Exception {
         long id = 1L;
 
-        // Example invalid: missing/blank title (requires @NotBlank on TaskRequest.title)
         Map<String, Object> invalidPayload = Map.of(
                 "title", "  ",
                 "completed", true
