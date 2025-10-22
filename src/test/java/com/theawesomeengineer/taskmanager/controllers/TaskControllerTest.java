@@ -17,12 +17,16 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -103,5 +107,80 @@ class TaskControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(taskService).deleteTask(1L);
+    }
+
+    @Test
+    void updateTask_WhenValid_ShouldReturn200AndBody() throws Exception {
+        long id = 1L;
+
+        Map<String, Object> payload = Map.of(
+                "title", "Updated title",
+                "description", "Updated desc",
+                "completed", true
+        );
+
+        Task updated = new Task(id, "Updated title", "Updated desc", true, null, null);
+
+        when(taskService.updateTask(eq(id), eq("Updated title"), eq("Updated desc"), eq(true)))
+                .thenReturn(updated);
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload))
+        )
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.title").value("Updated title"))
+        .andExpect(jsonPath("$.description").value("Updated desc"))
+        .andExpect(jsonPath("$.completed").value(true));
+
+        verify(taskService).updateTask(id, "Updated title", "Updated desc", true);
+        verifyNoMoreInteractions(taskService);
+    }
+
+    @Test
+    void updateTask_WhenNotFound_ShouldReturn404() throws Exception {
+        long id = 999L;
+
+        Map<String, Object> payload = Map.of(
+                "title", "Anything",
+                "description", "Anything",
+                "completed", false
+        );
+
+        when(taskService.updateTask(eq(id), any(), any(), any()))
+                .thenThrow(new NotFoundException("Task not found", "Task with ID 999 not found"));
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload))
+        )
+        .andExpect(status().isNotFound());
+
+        verify(taskService).updateTask(eq(id), any(), any(), any());
+        verifyNoMoreInteractions(taskService);
+    }
+
+    @Test
+    void updateTask_WhenInvalidPayload_ShouldReturn400() throws Exception {
+        long id = 1L;
+
+        // Example invalid: missing/blank title (requires @NotBlank on TaskRequest.title)
+        Map<String, Object> invalidPayload = Map.of(
+                "title", "  ",
+                "completed", true
+        );
+
+        mockMvc.perform(
+                put("/tasks/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidPayload))
+        )
+        .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(taskService);
     }
 }
