@@ -59,7 +59,8 @@ List any assumptions you made during development:
 
 ## Known Limitations
 List any known limitations or areas for improvement:
-- 
+- The repository now only have master branch as PROD environemnt.
+To sepearate the env we can create another develop branch specifically for testing
 - 
 - 
 
