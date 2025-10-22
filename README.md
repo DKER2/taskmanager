@@ -53,7 +53,7 @@ Describe your continuous integration setup and deployment strategy.
 
 ## Assumptions Made
 List any assumptions you made during development:
-- I'm treating this as a simple app, so I don't think authorization is necessary. If we add authorization, we'll also have to define the unauthorized responses in the OpenAPI spec, which I'd like to avoid.
+- I assume authorization is excluded. If we add authorization, we'll also have to define the unauthorized responses in the OpenAPI spec, which I'd like to avoid.
 - 
 - 
 
