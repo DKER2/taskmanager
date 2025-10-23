@@ -2,10 +2,11 @@
 name: Build and Publish Docker Image
 
 # This section defines when the workflow will run.
-# Here, it triggers on every 'push' to the 'main' branch.
+# It now triggers on any 'push' of a tag starting with 'v'.
 on:
   push:
-    branches: [ "main" ]
+    tags:
+      - 'v*'
 
 jobs:
   # Defines a single job named 'build-and-push-to-ghcr'.
@@ -36,7 +37,7 @@ jobs:
 
       # Step 3: Extract metadata (tags, labels) for Docker.
       # This action automatically generates tags based on the git branch, SHA, etc.
-      # It also correctly handles lowercasing the repository name.
+      # When triggered by a tag, it will automatically use that tag.
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -51,6 +52,6 @@ jobs:
           context: .
           push: true
           no-cache: true
+          # This will now use the Git tag (e.g., v1.0.0) as the Docker tag.
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
