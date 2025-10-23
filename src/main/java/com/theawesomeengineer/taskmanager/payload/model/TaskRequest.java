@@ -42,7 +42,7 @@ public class TaskRequest {
    * Title of the task
    * @return title
   */
-  @NotNull @Size(max = 255) 
+  @NotNull(message = "Task title is required") @Size(max = 255) 
   @Schema(name = "title", example = "Complete project documentation", description = "Title of the task", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("title")
   public String getTitle() {
@@ -62,7 +62,7 @@ public class TaskRequest {
    * Detailed description of the task
    * @return description
   */
-  @NotNull @Size(max = 1000) 
+  @NotNull(message = "Description cannot be empty") @Size(max = 1000) 
   @Schema(name = "description", example = "Write comprehensive documentation for the task management API", description = "Detailed description of the task", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("description")
   public String getDescription() {

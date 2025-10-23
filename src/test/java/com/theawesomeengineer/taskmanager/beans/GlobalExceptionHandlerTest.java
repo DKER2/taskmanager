@@ -52,8 +52,8 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Error body = response.getBody();
         assertNotNull(body);
-        assertTrue(body.getMessage().contains("Title is required"));
-        assertTrue(body.getMessage().contains("Description cannot be empty"));
+        assertTrue(body.getDetails().contains("Title is required"));
+        assertTrue(body.getDetails().contains("Description cannot be empty"));
         assertNotNull(body.getTimestamp());
     }
 
