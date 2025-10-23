@@ -2,18 +2,31 @@
 
 ## Overview
 
-A simple CRUD task Spring-Boot backend with following endpoints
+A simple CRUD task Spring-Boot backend with following endpoints. This project is a Task Manager API built with Spring Boot 3.5+, Java 21, MySQL 8+, and Docker. It supports basic task management with full CRUD operations.
 
 ## API implementation.
 
+## Features
+
+- CRUD APIs for tasks
+- Swagger UI documentation at `/swagger-ui.html`
+- CI/CD by github action
+- Gemini code review bot
+- Unit and integration tests
+- Dockerized setup
+
 ## Architecture
-I architecture application to three layer. `Controller` where the routing happen and validate the request. `Service` is where logic of application is mainly defined.
-`Mapper` as a mapping layer between Entity and Response contract.
-`Reposiory` is where an abstraction layer of database, instead of wrting SQL query from scratch, the repository will auto generate some default query
+The project is structured into:
+
+- **Controller** – defines API endpoints and validates requests
+- **Service** – contains business logic
+- **Mapper** – converts between entities and response models
+- **Repository** – handles database access via Spring Data JPA
 
 ## Prerequisites
-Java 21
-Docker
+- Java 21
+- Docker & Docker Compose
+- MySQL 8+
 
 And all the dependencies for Spring Boot is already defined in gradle
 
@@ -51,19 +64,21 @@ Model Task:
 ## Database Schema
 Describe your database structure and any migration approach used.
 
-## Observability (if implemented)
+## Observability
 - **Metrics**: Available at `/actuator/prometheus`
 - **Grafana Dashboard**: Access at `http://localhost:3000`
 - **Prometheus**: Access at `http://localhost:9090`
 
 ## CI/CD Pipeline
-Describe your continuous integration setup and deployment strategy.
+- Pull Requests: Each pull request triggers a GitHub Actions workflow that runs tests with Gradle, collects code coverage using JaCoCo, and uploads the coverage report to Codecov.
+
+- Main Branch Merges: When changes are merged into the main branch, the CI pipeline runs again via GitHub Actions to re-run all tests and update the code coverage metrics on Codecov.
+
+- Releases: When a new GitHub release is published, the pipeline builds a Docker image of the application and pushes it to the GitHub Container Registry (GHCR) with the appropriate tags for that release.
 
 ## Assumptions Made
 List any assumptions you made during development:
 - I assume authorization is excluded. If we add authorization, we'll also have to define the unauthorized responses in the OpenAPI spec, which I'd like to avoid.
-- 
-- 
 
 ## Known Limitations
 List any known limitations or areas for improvement:
@@ -76,7 +91,6 @@ List any known limitations or areas for improvement:
 - Java 21
 - MySQL 8+
 - Docker & Docker Compose
-- [Any additional technologies used]
 
 ## Author
-Your Name - [Your Email]
+Dang Huy Phuong - pdanghuy03@gmail.com
