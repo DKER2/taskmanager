@@ -11,10 +11,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      # Give Hikari/Spring up to 60s to establish the first connection
-      - SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT=60000
-    # optional: ensure we restart if DB briefly flaps during init
-    restart: unless-stopped
 
   db:
     image: mysql:8.0
@@ -30,7 +26,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-    restart: unless-stopped
 
 volumes:
   mysql-data:
