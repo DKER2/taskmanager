@@ -5,7 +5,7 @@ cleanup() {
     echo -e "\nStopping all services..."
     docker compose down
 }
-trap cleanup SIGINT EXIT
+trap cleanup SIGINT
 
 echo "Building and starting all services..."
 

@@ -36,12 +36,14 @@ public class GlobalExceptionHandler {
             errorMessage.add(error.getDefaultMessage());
         });
 
-        Error formattError = new Error(
-            errorMessage.toString(),
+        Error formatedError = new Error(
+            "Request contract must match",
             OffsetDateTime.now()
         );
+
+        formatedError.details(errorMessage.toString());
         
-        return new ResponseEntity<Error>(formattError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Error>(formatedError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
