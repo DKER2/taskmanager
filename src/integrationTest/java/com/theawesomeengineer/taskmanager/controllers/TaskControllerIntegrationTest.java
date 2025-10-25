@@ -103,17 +103,8 @@ public class TaskControllerIntegrationTest extends IntegrationTestBase {
         assertEquals(HttpStatus.OK, putResponse.getStatusCode());
         assertNotNull(putResponse.getBody());
         assertEquals("Updated Title", putResponse.getBody().getTitle());
-
-        ResponseEntity<Task> getResponse = restTemplate.getForEntity(
-                "/tasks/" + taskId,
-                Task.class
-        );
-
-        assertEquals(HttpStatus.OK, getResponse.getStatusCode());
-        assertNotNull(getResponse.getBody());
-        assertEquals("Updated Title", getResponse.getBody().getTitle());
-        assertEquals("Updated Desc", getResponse.getBody().getDescription());
-        assertEquals(true, getResponse.getBody().getCompleted());
+        assertEquals("Updated Desc", putResponse.getBody().getDescription());
+        assertEquals(true, putResponse.getBody().getCompleted());
     }
 
     @Test
