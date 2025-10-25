@@ -35,24 +35,13 @@ And all the dependencies for Spring Boot is already defined in gradle
 # Single command to run the entire application
 ./run.sh
 ```
-To run the pre-built Docker image, use this Docker Compose [file](https://github.com/DKER2/taskmanager/blob/main/docker-compose-example.yaml), which pulls the image from the GitHub Container Registry. Remember to also include the required Prometheus [config](https://github.com/DKER2/taskmanager/blob/main/prometheus.yml).
-```bash
-docker compose up
-```
 
 ## API Documentation
 - **OpenAPI Specification**: Available at `/swagger-ui.html` when running
 - **Postman Collection**: Import `postman_collection.json` for testing
 
 ## Testing
-Model Task:
-| Field    | Type |
-| -------- | ------- |
-| id  | Primary Key    |
-| title | String     |
-| description    | String    |
-| createdAt    | OffsetDateTime  |
-| updatedAt | OffsetDateTime |
+
 
 ### Unit Tests
 ```bash
@@ -65,7 +54,16 @@ Model Task:
 ```
 
 ## Database Schema
-Describe your database structure and any migration approach used.
+Model Task:
+| Field    | Type |
+| -------- | ------- |
+| id  | Primary Key    |
+| title | String     |
+| description    | String    |
+| createdAt    | OffsetDateTime  |
+| updatedAt | OffsetDateTime |
+
+## How to use with docker image
 
 ## Observability
 - **Metrics**: Available at `/actuator/prometheus`
