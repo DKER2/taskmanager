@@ -22,15 +22,28 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.mysql:mysql-connector-j:9.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.5.6'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
 	
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
@@ -39,29 +52,56 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
-	testImplementation 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation platform('org.testcontainers:testcontainers-bom:1.19.8')
+	testImplementation 'org.testcontainers:testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:mysql'
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs integration tests'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    useJUnitPlatform()
+
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/integrationTest.exec")
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
+    
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/test.exec")
+    }
 }
 
 tasks.named('jacocoTestReport') {
+    dependsOn test, integrationTest
+    
+    executionData.setFrom(files(
+        "$buildDir/jacoco/test.exec",
+        "$buildDir/jacoco/integrationTest.exec"
+    ))
+
     reports {
         xml.required = true
         html.required = true
     }
-	classDirectories.setFrom(files(classDirectories.files.collect {
-		fileTree(dir: it, exclude: [
-			'**/payload/api/TasksApi.class',
-			'**/payload/api/ApiUtil.class',
-			'**/payload/model/Error.class',
-			'**/payload/model/Task.class',
-			'**/payload/model/TaskRequest.class',
-			'**/*MapperImpl.class',
-		])
-	}))
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: [
+            '**/payload/api/TasksApi.class',
+            '**/payload/api/ApiUtil.class',
+            '**/payload/model/Error.class',
+            '**/payload/model/Task.class',
+            '**/payload/model/TaskRequest.class',
+            '**/*MapperImpl.class',
+        ])
+    }))
 }

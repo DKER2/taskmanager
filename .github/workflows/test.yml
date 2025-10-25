@@ -12,24 +12,24 @@ jobs:
 
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write # This is needed for the jacoco-report action to comment on a PR
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # 1. Clones your repo code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # Set the desired Java version
+          java-version: '21'
           distribution: 'temurin'
-          cache: 'gradle' # 2. Use Gradle caching for faster builds
+          cache: 'gradle'
 
       - name: Grant execution permission for gradlew
-        run: chmod +x gradlew # 3. Ensure the wrapper script is executable
+        run: chmod +x gradlew
 
-      - name: Run Spring Boot Tests
-        run: ./gradlew clean test --info --stacktrace
+      - name: Run all tests and create combined coverage report
+        run: ./gradlew clean jacocoTestReport --info --stacktrace
 
       - name: Add coverage to PR
         id: jacoco
