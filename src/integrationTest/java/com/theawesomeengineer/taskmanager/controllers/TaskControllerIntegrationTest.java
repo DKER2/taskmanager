@@ -51,6 +51,7 @@ public class TaskControllerIntegrationTest extends IntegrationTestBase {
                 Task.class
         );
 
+        assertEquals(HttpStatus.CREATED, postResponse.getStatusCode());
         assertNotNull(postResponse.getBody());
         Long newTaskId = postResponse.getBody().getId();
         
@@ -58,8 +59,6 @@ public class TaskControllerIntegrationTest extends IntegrationTestBase {
                 "/tasks/" + newTaskId,
                 Task.class
         );
-
-        assertEquals(HttpStatus.CREATED, postResponse.getStatusCode());
         assertEquals(HttpStatus.OK, getResponse.getStatusCode());
         assertNotNull(getResponse.getBody()); 
         assertEquals("Test Task", getResponse.getBody().getTitle());
