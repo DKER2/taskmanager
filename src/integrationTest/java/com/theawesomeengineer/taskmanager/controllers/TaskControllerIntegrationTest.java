@@ -3,6 +3,7 @@ package com.theawesomeengineer.taskmanager.controllers;
 import com.theawesomeengineer.taskmanager.payload.model.Task;
 import com.theawesomeengineer.taskmanager.repositories.TaskRepository;
 import com.theawesomeengineer.taskmanager.entities.TaskEntity;
+import com.theawesomeengineer.taskmanager.IntegrationTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,39 +12,13 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Full integration test.
- * 1. Starts the ENTIRE Spring Boot application.
- * 2. Starts a REAL MySQL database in a Docker container (using Testcontainers).
- * 3. Connects the app to the database.
- * 4. Sends REAL HTTP requests.
- */
 @Testcontainers 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TaskControllerIntegrationTest {
-
-    @Container
-    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
-            .withDatabaseName("testdb")
-            .withUsername("testuser")
-            .withPassword("testpass");
-
-    @DynamicPropertySource
-    static void configureDatasource(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mysql::getJdbcUrl);
-        registry.add("spring.datasource.username", mysql::getUsername);
-        registry.add("spring.datasource.password", mysql::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
-    }
-
+public class TaskControllerIntegrationTest extends IntegrationTestBase {
     @Autowired
     private TestRestTemplate restTemplate;
 
