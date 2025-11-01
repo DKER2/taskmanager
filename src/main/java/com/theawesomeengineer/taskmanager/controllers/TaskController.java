@@ -21,6 +21,7 @@ import com.theawesomeengineer.taskmanager.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
+import com.theawesomeengineer.taskmanager.beans.RequestBean;
 
 
 
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 @AllArgsConstructor
 public class TaskController implements TasksApi {
     private final TaskService taskService;
+
+    private RequestBean requestBean;
 
     @Override
     @PostMapping("")
@@ -46,6 +49,7 @@ public class TaskController implements TasksApi {
     @GetMapping("")
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> taskList = taskService.getTasks();
+        requestBean.print();
 
         return ResponseEntity.ok().body(taskList);
     }
