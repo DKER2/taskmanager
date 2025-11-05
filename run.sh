@@ -8,4 +8,4 @@ cleanup() {
 trap cleanup EXIT
 
 echo "Building and starting all services..."
-docker compose up
+docker compose up --build
