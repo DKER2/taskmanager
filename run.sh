@@ -1,3 +1,14 @@
-echo "Building and starting all services..."
+#!/bin/bash
+set -e
 
-docker compose up --build 
+# Function to clean up containers on exit
+cleanup() {
+    echo -e "\nStopping all services..."
+    docker compose down
+}
+# --- CHANGE THIS LINE ---
+trap cleanup EXIT
+# ------------------------
+
+echo "Building and starting all services..."
+docker compose up
