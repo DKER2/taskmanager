@@ -27,7 +27,7 @@ class GlobalExceptionHandlerTest {
                 HttpStatus.CONFLICT
         );
 
-        ResponseEntity<Error> response = handler.handleDuplicateException(baseException);
+        ResponseEntity<Error> response = handler.handleBaseException(baseException);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());

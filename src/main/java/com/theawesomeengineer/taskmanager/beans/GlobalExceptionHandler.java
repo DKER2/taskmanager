@@ -15,7 +15,7 @@ import com.theawesomeengineer.taskmanager.exceptions.BaseException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<Error> handleDuplicateException(BaseException ex) {
+    public ResponseEntity<Error> handleBaseException(BaseException ex) {
         Error formatedError = new Error(
             ex.getMessage(),
             OffsetDateTime.now()

@@ -34,11 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TaskController.class)
 @AutoConfigureMockMvc
 class TaskControllerTest {
-    @Autowired private MockMvc mockMvc;
+    @Autowired 
+    private MockMvc mockMvc;
 
-    @MockitoBean private TaskService taskService;
+    @MockitoBean 
+    private TaskService taskService;
 
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired 
+    private ObjectMapper objectMapper;
 
     @Test
     void getTasks_returnsListOfTasks() throws Exception {
